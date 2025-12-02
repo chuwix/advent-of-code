@@ -1,5 +1,5 @@
 [project]
-name = "aoc-2025"
+name = "advent-of-code"
 version = "0.1.0"
 description = ""
 authors = [

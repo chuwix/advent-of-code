@@ -1,50 +1,49 @@
-from typing import Iterable
+from typing import Iterable, Tuple
 from io import open
 
-import unittest
+import csv
 
 
-def parse(it: Iterable[str]) -> Iterable[int]:
-    for s in it:
-        s = s.replace("R", "").replace("L", "-")
-        yield int(s)
+def parse(s: str) -> Tuple[int, int]:
+    vals = s.split("-", 2)
+    return int(vals[0]), int(vals[1])
 
 
-def get_commands(file: str) -> Iterable[int]:
+def get_ranges(file: str) -> Iterable[Tuple[int, int]]:
     with (open(file) as input):
-        lines = input.readlines()
-    return parse(lines)
+        reader = csv.reader(input)
+        for row in reader:
+            for value in row:
+                yield parse(value)
 
 
-def solve_part_one(dial: int, commands: Iterable[int]) -> tuple[int, int]:
-    jackpots = 0
-
-    for i in commands:
-        # print(i)
-        dial = (dial + i) % 100
-
-        if dial == 0:
-            jackpots += 1
-
-    return dial, jackpots
+def is_invalid(i: int) -> bool:
+    s = str(i)
+    if len(s) % 2 == 1:
+        return False
+    return s.endswith(s[:len(s) // 2])
 
 
-def solve_part_two(dial: int, commands: Iterable[int]) -> tuple[int, int]:
-    jackpots = 0
+def solve_part_one(ranges: Iterable[Tuple[int, int]]) -> Iterable[int]:
+    for lower, upper in ranges:
+        for i in range(lower, upper + 1):
+            if is_invalid(i):
+                yield i
 
-    for i in commands:
-        # print(i)
-        was_null = dial == 0
-        full_rotations = int(i / 100)
-        jackpots += abs(full_rotations)
-        i -= full_rotations * 100  # correction for sum != dial check
-        sum = dial + i
-        dial = sum % 100
 
-        if dial == 0:
-            jackpots += 1
-        elif sum != dial and not was_null:
-            jackpots += 1
+def is_invalid_repeated(i: int) -> bool:
+    s = str(i)
+    for i in range(1, len(s) // 2 + 1):
+        if len(s) % i != 0:
+            continue
 
-    return dial, jackpots
+        if s[:i] * (len(s) // i) == s:
+            return True
 
+    return False
+
+def solve_part_two(ranges: Iterable[Tuple[int, int]]) -> Iterable[int]:
+    for lower, upper in ranges:
+        for i in range(lower, upper + 1):
+            if is_invalid_repeated(i):
+                yield i

@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from d2.main import solve_part_one, solve_part_two, get_ranges
+from y2025.d2.main import solve_part_one, solve_part_two, get_ranges
 
 TESTDATA_FILENAME = os.path.join(os.path.dirname(__file__), 'input_test.txt')
 

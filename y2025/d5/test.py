@@ -13,11 +13,11 @@ class Test(unittest.TestCase):
         # print(list(invalid_ids))
         self.assertEqual(3, fresh_ids)
 
-    # def test_part_two(self):
-    #     ranges = get_and_transform_data(TESTDATA_FILENAME)
-    #     invalid_ids = solve_part_two(ranges)
-    #     # print(list(invalid_ids))
-    #     self.assertEqual(4174379265, sum(invalid_ids))
+    def test_part_two(self):
+        ranges, _ = get_ranges_and_ids(TESTDATA_FILENAME)
+        fresh_ids = solve_part_two(ranges)
+        # print(list(invalid_ids))
+        self.assertEqual(14, fresh_ids)
 
 
 if __name__ == "__main__":

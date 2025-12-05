@@ -75,5 +75,6 @@ def solve_part_one(ranges: list[Range], ids: list[int]) -> int:
     return count_fresh_ids(merged_ranges, ids)
 
 
-def solve_part_two(ranges: list[Range], ids: list[int]) -> int:
-    pass
+def solve_part_two(ranges: list[Range]) -> int:
+    merged_ranges = merge_ranges(ranges)
+    return sum(r.upper - r.lower + 1 for r in merged_ranges)

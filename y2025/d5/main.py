@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from io import open
+from os import PathLike
 
 
 @dataclass
@@ -16,7 +17,7 @@ def parse(s: str) -> Range:
     return Range(int(vals[0]), int(vals[1]))
 
 
-def get_ranges_and_ids(file: str) -> tuple[list[Range], list[int]]:
+def get_ranges_and_ids(file: PathLike[str]) -> tuple[list[Range], list[int]]:
     ranges, ids = [], []
 
     with (open(file) as input):

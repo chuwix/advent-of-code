@@ -1,4 +1,3 @@
-from __future__ import annotations
 
 import dataclasses
 import heapq
@@ -9,24 +8,7 @@ from typing import Iterable
 from more_itertools import take
 from more_itertools.more import distinct_combinations
 
-
-@dataclasses.dataclass(frozen=True)
-class Point3:
-    x: int
-    y: int
-    z: int
-    salt = 9999
-
-    @staticmethod
-    def from_data(data: Iterable[int]) -> Point3:
-        data = iter(data)
-        return Point3(next(data), next(data), next(data))
-
-    def distance_sq(self, other: Point3) -> int:
-        dx = self.x - other.x
-        dy = self.y - other.y
-        dz = self.z - other.z
-        return dx * dx + dy * dy + dz * dz
+from tools.datastructures.points import Point3
 
 
 def parse_inputs(file) -> Iterable[Point3]:

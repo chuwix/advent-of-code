@@ -53,13 +53,41 @@ class Point2:
 
 
 @dataclasses.dataclass(frozen=True)
+class Segment:
+    p1: Point2
+    p2: Point2
+
+    def __post_init__(self):
+        if self.p1.x != self.p2.x and self.p1.y != self.p2.y:
+            raise ValueError(f"Not a valid segment: {self.p1}<->{self.p2}")
+
+    def contains(self, p: Point2) -> bool:
+        x1, x2 = minmax(self.p1.x, self.p2.x)
+        y1, y2 = minmax(self.p1.y, self.p2.y)
+        return x1 <= p.x <= x2 and y1 <= p.y <= y2
+
+    @staticmethod
+    def get_points_inside(p1: Point2, p2: Point2) -> Iterable[Point2]:
+        x1, x2 = minmax(p1.x, p2.x)
+        y1, y2 = minmax(p1.y, p2.y)
+        for i in range(x1, x2 + 1):
+            for j in range(y1, y2 + 1):
+                yield Point2(i, j)
+
+    def points_inside(self) -> Iterable[Point2]:
+        return Rectangle.get_points_inside(self.p1, self.p2)
+
+
+@dataclasses.dataclass(frozen=True)
 class Rectangle:
     p1: Point2
     p2: Point2
 
     @staticmethod
     def get_area(p1: Point2, p2: Point2) -> int:
-        return abs(p1.x - p2.x + 1) * abs(p1.y - p2.y + 1)
+        x1, x2 = minmax(p1.x, p2.x)
+        y1, y2 = minmax(p1.y, p2.y)
+        return abs(x2 - x1 + 1) * abs(y2 - y1 + 1)
 
     def area(self) -> int:
         return Rectangle.get_area(self.p1, self.p2)
@@ -74,6 +102,15 @@ class Rectangle:
 
     def points_inside(self) -> Iterable[Point2]:
         return Rectangle.get_points_inside(self.p1, self.p2)
+
+    def get_segments(self) -> Tuple[Segment, Segment, Segment, Segment]:
+        points = (self.p1, Point2(self.p1.x, self.p2.y), self.p2, Point2(self.p2.x, self.p1.y))
+        return Segment(points[0], points[1]), Segment(points[1], points[2]), Segment(points[2], points[3]), Segment(points[3], points[0])
+
+    def contains(self, p: Point2) -> bool:
+        x1, x2 = minmax(self.p1.x, self.p2.x)
+        y1, y2 = minmax(self.p1.y, self.p2.y)
+        return x1 <= p.x <= x2 and y1 <= p.y <= y2
 
 
 @dataclasses.dataclass(frozen=True)

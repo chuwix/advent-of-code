@@ -30,7 +30,7 @@ class Test(unittest.TestCase):
         self.assertEqual(24, solve_part_two(TESTDATA_FILENAME))
 
     def test_part_two_live(self):
-        self.assertEqual(0, solve_part_two(LIVE_FILENAME))
+        self.assertEqual(1429596008, solve_part_two(LIVE_FILENAME))
 
 
 if __name__ == "__main__":

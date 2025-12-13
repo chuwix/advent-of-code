@@ -5,12 +5,14 @@ import operator
 import sys
 from functools import reduce
 from itertools import combinations_with_replacement, groupby
-from typing import Iterable, Tuple
+from os import PathLike
+from typing import Iterable, Tuple, cast
 
 from more_itertools import flatten, argmin
 from more_itertools.recipes import quantify
 
-from tools.math import all_combinations
+from tools.math import all_combinations  # type: ignore
+from tools.time import timeit  # type: ignore
 
 
 @dataclasses.dataclass
@@ -25,6 +27,9 @@ class Button:
 
     def __iter__(self):
         return iter(self.v)
+
+    def __contains__(self, item):
+        return item in self.v
 
 
 @dataclasses.dataclass
@@ -58,7 +63,7 @@ class MachineInfo:
     target_joltage: Joltage
 
 
-def parse_inputs(file) -> Iterable[MachineInfo]:
+def parse_inputs(file: PathLike) -> Iterable[MachineInfo]:
     def parse_target_state(it: str) -> set[int]:
         return set(i for i, c in enumerate(it[1:-1]) if c == "#")
 
@@ -117,7 +122,7 @@ def compute_fewest_button_presses(wiring: Iterable[MachineInfo]) -> int:
 @dataclasses.dataclass
 class CombinationTracker:
     current_comb: list[Tuple[Button, ...]]
-    min_comb: Tuple[Button, ...] = None
+    min_comb: Tuple[Button, ...] | None = None
     current_comb_len: int = 0
 
     @contextlib.contextmanager
@@ -150,17 +155,21 @@ def compute_fewest_joltage_button_presses(wiring: Iterable[MachineInfo]) -> int:
         if index is None: return
         if tracker.min_comb and tracker.current_comb_len + current_joltage[index] >= len(tracker.min_comb): return
 
-        for comb in combinations_with_replacement(buttons_leanest, current_joltage[index]):
+        leanest_var: list[Button] = cast(list[Button], buttons_leanest)
+        for comb in combinations_with_replacement(leanest_var, current_joltage[index]):
             if tracker.min_comb and tracker.current_comb_len + current_joltage[index] >= len(tracker.min_comb): return
             joltage = current_joltage.copy_and_reduce_joltage(comb)
             with tracker.push_comb(comb):
-                get_valid_button_presses(joltage, buttons_rest, tracker)
+                rest_var: list[Button] = cast(list[Button], buttons_rest)
+                get_valid_button_presses(joltage, rest_var, tracker)
 
-    def get_min_button_presses(target_joltage: Joltage, buttons_unused: list[Button]) -> Tuple[Button, ...]:
+    @timeit
+    def get_min_button_presses(target_joltage: Joltage, buttons: list[Button]) -> Tuple[Button, ...]:
         print(f"\n\n{target_joltage=}")
         tracker = CombinationTracker([])
-        get_valid_button_presses(target_joltage, buttons_unused, tracker)
-        return tracker.min_comb
+        get_valid_button_presses(target_joltage, buttons, tracker)
+        min_comb = cast(tuple[Button, ...], tracker.min_comb)
+        return min_comb
 
     with multiprocessing.Pool(multiprocessing.cpu_count()) as pool:
         valid_presses = pool.map(len, (get_min_button_presses(info.target_joltage, info.buttons) for info in wiring))

@@ -2,7 +2,7 @@ import math
 from itertools import combinations, combinations_with_replacement
 from typing import Any, SupportsAbs, Generator
 
-def identity(x):
+def identity(x: Any) -> Any:
     return x
 
 def sign(x: SupportsAbs) -> int:

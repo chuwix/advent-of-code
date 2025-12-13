@@ -1,6 +1,9 @@
 import os
 import unittest
 
+from tools.mypyc import ensure_built
+
+ensure_built()
 from y2025.d10.main import compute_fewest_button_presses, parse_inputs, compute_fewest_joltage_button_presses
 
 TESTDATA_FILENAME = os.path.join(os.path.dirname(__file__), 'input_test.txt')

@@ -12,7 +12,19 @@ files = [
     {file = "more_itertools-10.8.0.tar.gz", hash = "sha256:f638ddf8a1a0d134181275fb5d58b086ead7c6a72429ad725c67503f13ba30bd"},
 ]
 
+[[package]]
+name = "tools"
+version = "1.0.15"
+description = "python syntax tool"
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "tools-1.0.15-py3-none-any.whl", hash = "sha256:d4fb0c698b46c16e75865fdc3341c2dd32068dc1f5952de72dbf4baaa3d81ba7"},
+    {file = "tools-1.0.15.tar.gz", hash = "sha256:240fb42c6e2768c45844db738a801596844b6e6a18da059b2664c7b813bc7ff3"},
+]
+
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "e38360ece52f4eeeea8efd87dac02457f2ca711877b626c4fa2a165de9059b8e"
+content-hash = "10cee7045b32503a4393c7a36e598a8abf0b439d543807480e2cae128174409f"

@@ -11,8 +11,8 @@ from typing import Iterable, Tuple, cast
 from more_itertools import flatten, argmin
 from more_itertools.recipes import quantify
 
+from tools.decorators import timeit  # type: ignore
 from tools.math import all_combinations  # type: ignore
-from tools.time import timeit  # type: ignore
 
 
 @dataclasses.dataclass

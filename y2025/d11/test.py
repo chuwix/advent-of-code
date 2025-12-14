@@ -8,14 +8,14 @@ LIVE_FILENAME = os.path.join(os.path.dirname(__file__), 'input.txt')
 
 
 def solve_part_one(file: os.PathLike):
-    devices, edges, edge_map, target_map = parse_inputs(file)
-    total = get_path_count_to_out(devices, edges, edge_map, target_map)
+    rack = parse_inputs(file)
+    total = get_path_count_to_out(rack, rack.devices["you"], rack.devices["out"])
     return total
 
 
 def solve_part_two(file: os.PathLike):
-    devices, edges, edge_map, target_map = parse_inputs(file)
-    total = get_path_count_to_out(devices, edges, edge_map, target_map)
+    rack = parse_inputs(file)
+    total = get_path_count_to_out(rack, rack.devices["you"], rack.devices["out"])
     return total
 
 
@@ -26,9 +26,9 @@ class Test(unittest.TestCase):
     def test_part_one_live(self):
         self.assertEqual(788, solve_part_one(LIVE_FILENAME))
 
-    # def test_part_two(self):
-    #     self.assertEqual(0, solve_part_two(TESTDATA_FILENAME))
-    #
+    def test_part_two(self):
+        self.assertEqual(2, solve_part_two(TESTDATA_FILENAME))
+
     # def test_part_two_live(self):
     #     self.assertEqual(0, solve_part_two(LIVE_FILENAME))
 

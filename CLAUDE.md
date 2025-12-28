@@ -115,4 +115,4 @@ The project uses `tools` package (version ~1.0.15) as an internal dependency.
 - Use dataclasses for structured data (see `y2025/d11/main.py` and `y2025/d12/main.py` for examples)
 - Prefer frozen dataclasses for immutable data structures
 - Type hints are used throughout the codebase
-- **IMPORTANT**: Do NOT read `input.txt` files as they can be very large. Only read `input_test.txt` or `input_test_p2.txt` files when analyzing puzzle inputs
+- **IMPORTANT**: Do NOT read full `input.txt` files as they can be very large. Only read first 20 or so lines and `input_test.txt` or `input_test_p2.txt` files when analyzing puzzle inputs

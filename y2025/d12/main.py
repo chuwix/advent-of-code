@@ -1,7 +1,8 @@
 import dataclasses
-from typing import Iterable, Tuple
+from typing import Iterable
 
 from BitArray2D import BitArray2D, godel
+from more_itertools import quantify
 from more_itertools.more import peekable
 
 from tools.datastructures.bitarray2d import rotate, flip
@@ -96,61 +97,14 @@ def parse_inputs(file) -> tuple[dict[int, Part], list[Box]]:
 
 
 def try_fit_all_parts(box: Box, parts: dict[int, Part]) -> bool:
-    """Try to fit all required parts into the box."""
-    parts_to_place: list[Part] = []
-    for part_id, count in box.fits.items():
-        for _ in range(count):
-            parts_to_place.append(parts[part_id])
-
-    if not parts_to_place:
-        return True
-
-    occupied = BitArray2D(rows=box.array.rows, columns=box.array.columns)
-    return backtrack(occupied, parts_to_place)
-
-
-def backtrack(occupied: BitArray2D, remaining: list[Part]) -> bool:
-    """Recursive backtracking to place all parts."""
-    if not remaining:
-        return True
-
-    for variant in remaining[0].variants:
-        for row in range(occupied.rows - variant.array.rows + 1):
-            for col in range(occupied.columns - variant.array.columns + 1):
-                if can_place_at(occupied, variant, row, col):
-                    place_part_at_inplace(occupied, variant, row, col, place=True)
-
-                    if backtrack(occupied, remaining[1:]):
-                        return True
-
-                    place_part_at_inplace(occupied, variant, row, col, place=False)
-
-    return False
-
-
-def can_place_at(occupied: BitArray2D, variant: PartVariant, row: int, col: int) -> bool:
-    """Check if variant can be placed at position without collision."""
-    for r in range(variant.array.rows):
-        for c in range(variant.array.columns):
-            if variant.array[godel(r, c)]:
-                if occupied[godel(row + r, col + c)]:
-                    return False
-    return True
-
-
-def place_part_at_inplace(occupied: BitArray2D, variant: PartVariant, row: int, col: int, place: bool = True) -> None:
-    """Place or remove variant at position."""
-    value = 1 if place else 0
-    for r in range(variant.array.rows):
-        for c in range(variant.array.columns):
-            if variant.array[godel(r, c)]:
-                occupied[row + r, col + c] = value
+    """Check if parts fit in available space."""
+    total_cells_needed = sum(
+        parts[part_id].variants[0].cell_count * count
+        for part_id, count in box.fits.items()
+    )
+    return total_cells_needed <= box.array.rows * box.array.columns
 
 
 def get_path_count(parts: dict[int, Part], boxes: list[Box]) -> int:
     """Count how many boxes can fit all their required parts."""
-    count = 0
-    for box in boxes:
-        if try_fit_all_parts(box, parts):
-            count += 1
-    return count
+    return quantify(try_fit_all_parts(box, parts) for box in boxes)
